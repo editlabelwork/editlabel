@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface NewIndustryDialogProps {
@@ -13,6 +13,7 @@ interface NewIndustryDialogProps {
 
 const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
   const [open, setOpen] = useState(false);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [form, setForm] = useState({
     razaoSocial: '', nomeFantasia: '', cnpj: '',
     rua: '', numero: '', bairro: '', cidade: '', estado: '', cep: '',
@@ -21,6 +22,21 @@ const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
   });
 
   const update = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
+
+  const handleLogoUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => setLogoPreview(ev.target?.result as string);
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +47,7 @@ const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
     toast.success(`Indústria "${form.nomeFantasia}" cadastrada com sucesso!`);
     setOpen(false);
     setForm({ razaoSocial: '', nomeFantasia: '', cnpj: '', rua: '', numero: '', bairro: '', cidade: '', estado: '', cep: '', contatoNome: '', contatoEmail: '', contatoTelefone: '', contatoWhatsapp: '', site: '', observacoes: '' });
+    setLogoPreview(null);
   };
 
   return (
@@ -48,6 +65,25 @@ const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
           <DialogTitle className="font-display">Cadastrar Nova Indústria</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5 mt-2">
+          {/* Logo */}
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={handleLogoUpload}
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/30 bg-muted/50 hover:bg-muted transition-colors overflow-hidden"
+            >
+              {logoPreview ? (
+                <img src={logoPreview} alt="Logo" className="h-full w-full object-cover rounded-xl" />
+              ) : (
+                <Upload className="h-5 w-5 text-muted-foreground" />
+              )}
+            </button>
+            <div>
+              <p className="text-sm font-medium">Logo da Indústria</p>
+              <p className="text-xs text-muted-foreground">Clique para enviar a logo (PNG, JPG)</p>
+            </div>
+          </div>
+
           {/* Dados da empresa */}
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Dados da Empresa</p>
@@ -71,30 +107,12 @@ const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Endereço</p>
             <div className="grid grid-cols-6 gap-3">
-              <div className="col-span-4">
-                <Label>Rua</Label>
-                <Input value={form.rua} onChange={e => update('rua', e.target.value)} />
-              </div>
-              <div className="col-span-2">
-                <Label>Número</Label>
-                <Input value={form.numero} onChange={e => update('numero', e.target.value)} />
-              </div>
-              <div className="col-span-2">
-                <Label>Bairro</Label>
-                <Input value={form.bairro} onChange={e => update('bairro', e.target.value)} />
-              </div>
-              <div className="col-span-2">
-                <Label>Cidade</Label>
-                <Input value={form.cidade} onChange={e => update('cidade', e.target.value)} />
-              </div>
-              <div>
-                <Label>UF</Label>
-                <Input value={form.estado} onChange={e => update('estado', e.target.value)} maxLength={2} />
-              </div>
-              <div>
-                <Label>CEP</Label>
-                <Input value={form.cep} onChange={e => update('cep', e.target.value)} placeholder="00000-000" />
-              </div>
+              <div className="col-span-4"><Label>Rua</Label><Input value={form.rua} onChange={e => update('rua', e.target.value)} /></div>
+              <div className="col-span-2"><Label>Número</Label><Input value={form.numero} onChange={e => update('numero', e.target.value)} /></div>
+              <div className="col-span-2"><Label>Bairro</Label><Input value={form.bairro} onChange={e => update('bairro', e.target.value)} /></div>
+              <div className="col-span-2"><Label>Cidade</Label><Input value={form.cidade} onChange={e => update('cidade', e.target.value)} /></div>
+              <div><Label>UF</Label><Input value={form.estado} onChange={e => update('estado', e.target.value)} maxLength={2} /></div>
+              <div><Label>CEP</Label><Input value={form.cep} onChange={e => update('cep', e.target.value)} placeholder="00000-000" /></div>
             </div>
           </div>
 
@@ -102,33 +120,15 @@ const NewIndustryDialog = ({ trigger }: NewIndustryDialogProps) => {
           <div className="space-y-3">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Contato</p>
             <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>Nome do contato</Label>
-                <Input value={form.contatoNome} onChange={e => update('contatoNome', e.target.value)} />
-              </div>
-              <div>
-                <Label>E-mail</Label>
-                <Input type="email" value={form.contatoEmail} onChange={e => update('contatoEmail', e.target.value)} />
-              </div>
-              <div>
-                <Label>Telefone</Label>
-                <Input value={form.contatoTelefone} onChange={e => update('contatoTelefone', e.target.value)} />
-              </div>
-              <div>
-                <Label>WhatsApp</Label>
-                <Input value={form.contatoWhatsapp} onChange={e => update('contatoWhatsapp', e.target.value)} />
-              </div>
+              <div><Label>Nome do contato</Label><Input value={form.contatoNome} onChange={e => update('contatoNome', e.target.value)} /></div>
+              <div><Label>E-mail</Label><Input type="email" value={form.contatoEmail} onChange={e => update('contatoEmail', e.target.value)} /></div>
+              <div><Label>Telefone</Label><Input value={form.contatoTelefone} onChange={e => update('contatoTelefone', e.target.value)} /></div>
+              <div><Label>WhatsApp</Label><Input value={form.contatoWhatsapp} onChange={e => update('contatoWhatsapp', e.target.value)} /></div>
             </div>
           </div>
 
-          <div>
-            <Label>Site</Label>
-            <Input value={form.site} onChange={e => update('site', e.target.value)} placeholder="www.exemplo.com.br" />
-          </div>
-          <div>
-            <Label>Observações</Label>
-            <Textarea value={form.observacoes} onChange={e => update('observacoes', e.target.value)} rows={2} />
-          </div>
+          <div><Label>Site</Label><Input value={form.site} onChange={e => update('site', e.target.value)} placeholder="www.exemplo.com.br" /></div>
+          <div><Label>Observações</Label><Textarea value={form.observacoes} onChange={e => update('observacoes', e.target.value)} rows={2} /></div>
 
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>

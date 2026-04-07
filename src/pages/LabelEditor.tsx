@@ -180,6 +180,7 @@ const LabelEditor = () => {
     if (!designerEmail) { toast.error('Informe o e-mail do designer.'); return; }
     setCurrentStatus('enviado_industria');
     toast.success(`Rótulo enviado para ${designerEmail}!`);
+    setTimeout(() => navigate('/'), 600);
   };
 
   const handleWhatsApp = () => {
@@ -193,6 +194,11 @@ const LabelEditor = () => {
     setCurrentStatus('alteracao');
     toast.info('Alteração solicitada!');
     setAlteracaoNotes('');
+    setTimeout(() => navigate('/'), 600);
+  };
+
+  const handleSalvar = () => {
+    toast.success('Rascunho salvo!');
   };
 
   const handleAttachFile = () => {
@@ -724,7 +730,7 @@ const LabelEditor = () => {
       {/* Action Bar */}
       <div className="sticky bottom-0 border-t bg-card py-3 px-4 -mx-6 -mb-6 flex items-center gap-2 justify-between flex-wrap rounded-t-xl shadow-lg">
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 rounded-full" onClick={() => toast.success('Rascunho salvo!')}>
+          <Button variant="outline" size="sm" className="gap-1.5 rounded-full" onClick={handleSalvar}>
             <Save className="h-4 w-4" /> Salvar
           </Button>
           <Button variant="outline" size="sm" className="gap-1.5 rounded-full" onClick={() => toast.info('PDF gerado! (em desenvolvimento)')}>
