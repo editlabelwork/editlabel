@@ -67,7 +67,7 @@ const LabelEditor = () => {
   const [unidadePeso, setUnidadePeso] = useState(existing?.unidadePeso || 'g');
   const [qtdPorcoes, setQtdPorcoes] = useState(existing?.qtdPorcoes?.toString() || '');
   const [pesoLiquido, setPesoLiquido] = useState(existing?.pesoLiquido?.toString() || '');
-  const [unidadePesoLiquido, setUnidadePesoLiquido] = useState(existing?.unidadePesoLiquido || 'g');
+  const [unidadePesoLiquido, setUnidadePesoLiquido] = useState<string>(existing?.unidadePesoLiquido || 'g');
   const [codigoBarras, setCodigoBarras] = useState(existing?.codigoBarras || '');
   const [ingredientes, setIngredientes] = useState(existing?.content.ingredientes || '');
   const [alergenicos, setAlergenicos] = useState<string[]>(existing?.content.contemGluten ? ['Glúten'] : []);
