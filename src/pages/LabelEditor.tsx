@@ -41,7 +41,7 @@ const LabelEditor = () => {
   const [nomeProduto, setNomeProduto] = useState(existing?.nomeProduto || '');
   const [sabor, setSabor] = useState(existing?.sabor || '');
   const [apresentacao, setApresentacao] = useState(existing?.apresentacao || '');
-  const [tipoSuplemento, setTipoSuplemento] = useState(existing?.tipoSuplemento || 'capsulas');
+  const [tipoSuplemento, setTipoSuplemento] = useState<string>(existing?.tipoSuplemento || 'capsulas');
   const [pesoPorcao, setPesoPorcao] = useState(existing?.pesoPorcao?.toString() || '');
   const [qtdPorcoes, setQtdPorcoes] = useState(existing?.qtdPorcoes?.toString() || '');
   const [pesoLiquido, setPesoLiquido] = useState(existing?.pesoLiquido?.toString() || '');
