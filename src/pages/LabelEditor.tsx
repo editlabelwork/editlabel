@@ -199,8 +199,6 @@ const LabelEditor = () => {
 
   const handleSalvar = () => {
     toast.success('Rascunho salvo!');
-    setTimeout(() => navigate('/'), 600);
-  };
   };
 
   const handleAttachFile = () => {
