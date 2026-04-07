@@ -180,6 +180,7 @@ const LabelEditor = () => {
     if (!designerEmail) { toast.error('Informe o e-mail do designer.'); return; }
     setCurrentStatus('enviado_industria');
     toast.success(`Rótulo enviado para ${designerEmail}!`);
+    setTimeout(() => navigate('/'), 600);
   };
 
   const handleWhatsApp = () => {
@@ -193,6 +194,13 @@ const LabelEditor = () => {
     setCurrentStatus('alteracao');
     toast.info('Alteração solicitada!');
     setAlteracaoNotes('');
+    setTimeout(() => navigate('/'), 600);
+  };
+
+  const handleSalvar = () => {
+    toast.success('Rascunho salvo!');
+    setTimeout(() => navigate('/'), 600);
+  };
   };
 
   const handleAttachFile = () => {
