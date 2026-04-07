@@ -62,16 +62,18 @@ const IndustryDetail = () => {
       <Tabs defaultValue="todos">
         <TabsList>
           <TabsTrigger value="todos">Todos ({labels.length})</TabsTrigger>
-          <TabsTrigger value="rascunho">Rascunho</TabsTrigger>
-          <TabsTrigger value="andamento">Em andamento</TabsTrigger>
+          <TabsTrigger value="em_andamento">Em Andamento</TabsTrigger>
+          <TabsTrigger value="enviado_industria">Enviado</TabsTrigger>
           <TabsTrigger value="alteracao">Alteração</TabsTrigger>
-          <TabsTrigger value="aprovado">Finalizados</TabsTrigger>
+          <TabsTrigger value="aprovado">Aprovado</TabsTrigger>
+          <TabsTrigger value="finalizado">Finalizado</TabsTrigger>
         </TabsList>
         <TabsContent value="todos" className="mt-4">{renderLabels(labels)}</TabsContent>
-        <TabsContent value="rascunho" className="mt-4">{renderLabels(filterLabels('rascunho'))}</TabsContent>
-        <TabsContent value="andamento" className="mt-4">{renderLabels(labels.filter(l => ['enviado', 'em_analise'].includes(l.status)))}</TabsContent>
+        <TabsContent value="em_andamento" className="mt-4">{renderLabels(filterLabels('em_andamento'))}</TabsContent>
+        <TabsContent value="enviado_industria" className="mt-4">{renderLabels(filterLabels('enviado_industria'))}</TabsContent>
         <TabsContent value="alteracao" className="mt-4">{renderLabels(filterLabels('alteracao'))}</TabsContent>
         <TabsContent value="aprovado" className="mt-4">{renderLabels(filterLabels('aprovado'))}</TabsContent>
+        <TabsContent value="finalizado" className="mt-4">{renderLabels(filterLabels('finalizado'))}</TabsContent>
       </Tabs>
     </div>
   );

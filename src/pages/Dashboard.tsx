@@ -1,37 +1,25 @@
-import { FileText, Send, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { FileText, Send, AlertCircle, CheckCircle2, Flag } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { mockLabels, mockIndustries } from '@/data/mockData';
 import StatusBadge from '@/components/StatusBadge';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { Link } from 'react-router-dom';
+import { STATUS_ORDER, STATUS_CONFIG, LabelStatus } from '@/types';
 
 const Dashboard = () => {
   const totalLabels = mockLabels.length;
-  const enviados = mockLabels.filter(l => l.status === 'enviado').length;
+  const emAndamento = mockLabels.filter(l => l.status === 'em_andamento').length;
   const alteracoes = mockLabels.filter(l => l.status === 'alteracao').length;
-  const aprovados = mockLabels.filter(l => l.status === 'aprovado').length;
+  const finalizados = mockLabels.filter(l => l.status === 'finalizado').length;
 
   const metrics = [
     { title: 'Total de Rótulos', value: totalLabels, icon: FileText, color: 'text-primary' },
-    { title: 'Aguardando Designer', value: enviados, icon: Send, color: 'text-status-sent-text' },
+    { title: 'Em Andamento', value: emAndamento, icon: Send, color: 'text-status-progress-text' },
     { title: 'Alterações Pendentes', value: alteracoes, icon: AlertCircle, color: 'text-destructive' },
-    { title: 'Finalizados', value: aprovados, icon: CheckCircle2, color: 'text-status-approved-text' },
+    { title: 'Finalizados', value: finalizados, icon: CheckCircle2, color: 'text-status-done-text' },
   ];
 
-  const statusData = [
-    { name: 'Rascunho', value: mockLabels.filter(l => l.status === 'rascunho').length },
-    { name: 'Enviado', value: enviados },
-    { name: 'Em Análise', value: mockLabels.filter(l => l.status === 'em_analise').length },
-    { name: 'Alteração', value: alteracoes },
-    { name: 'Aprovado', value: aprovados },
-  ];
-
-  const industryData = mockIndustries.filter(i => i.status === 'ativo').map(ind => ({
-    name: ind.nomeFantasia,
-    value: mockLabels.filter(l => l.industryId === ind.id).length,
-  }));
-
-  const PIE_COLORS = ['hsl(152,64%,26%)', 'hsl(152,50%,40%)', 'hsl(40,96%,60%)', 'hsl(270,60%,60%)', 'hsl(0,84%,60%)'];
+  const getLabelsForStatus = (status: LabelStatus) =>
+    mockLabels.filter(l => l.status === status);
 
   return (
     <div className="space-y-6">
@@ -50,35 +38,57 @@ const Dashboard = () => {
         ))}
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="p-5">
-          <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Rótulos por Status</h3>
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={statusData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220,13%,91%)" />
-              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-              <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-              <Tooltip />
-              <Bar dataKey="value" fill="hsl(152,64%,26%)" radius={[6, 6, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </Card>
-
-        <Card className="p-5">
-          <h3 className="mb-4 text-sm font-semibold text-muted-foreground">Por Indústria</h3>
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
-              <Pie data={industryData} cx="50%" cy="50%" innerRadius={55} outerRadius={90} dataKey="value" paddingAngle={3}>
-                {industryData.map((_, i) => (
-                  <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </Card>
+      {/* Kanban Board */}
+      <div>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-4 flex items-center gap-2">
+          <Flag className="h-4 w-4" /> Quadro de Status — Estilo Kanban
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          {STATUS_ORDER.map(status => {
+            const config = STATUS_CONFIG[status];
+            const labels = getLabelsForStatus(status);
+            return (
+              <div key={status} className="rounded-xl border bg-card overflow-hidden">
+                <div className={`px-3 py-2.5 flex items-center justify-between ${config.bgClass}`}>
+                  <span className={`text-xs font-semibold ${config.textClass} flex items-center gap-1.5`}>
+                    <span>{config.icon}</span> {config.label}
+                  </span>
+                  <span className={`text-xs font-bold ${config.textClass} bg-card/60 rounded-full px-2 py-0.5`}>
+                    {labels.length}
+                  </span>
+                </div>
+                <div className="p-2 space-y-2 min-h-[120px]">
+                  {labels.length === 0 && (
+                    <p className="text-xs text-muted-foreground text-center py-6">Nenhum rótulo</p>
+                  )}
+                  {labels.map(label => {
+                    const industry = mockIndustries.find(i => i.id === label.industryId);
+                    return (
+                      <Link key={label.id} to={`/rotulos/${label.id}`}>
+                        <Card className="p-3 hover:shadow-md transition-shadow cursor-pointer border-l-4" style={{ borderLeftColor: `hsl(var(--status-${status === 'em_andamento' ? 'progress' : status === 'enviado_industria' ? 'sent' : status === 'alteracao' ? 'change' : status === 'aprovado' ? 'approved' : 'done'}-text))` }}>
+                          <p className="text-sm font-medium truncate">{label.nomeProduto}</p>
+                          <p className="text-xs text-muted-foreground truncate">{industry?.nomeFantasia}</p>
+                          {label.prazo && (
+                            <p className="text-[10px] text-muted-foreground mt-1">Prazo: {label.prazo}</p>
+                          )}
+                          {label.changedFields.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-1.5">
+                              {label.changedFields.map(f => (
+                                <span key={f} className="bg-status-change-bg text-status-change-text text-[9px] px-1.5 py-0.5 rounded-full font-medium">
+                                  {f}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </Card>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Deadline Table */}
@@ -96,7 +106,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {mockLabels.filter(l => l.prazo && l.status !== 'aprovado').map(label => {
+              {mockLabels.filter(l => l.prazo && l.status !== 'finalizado').map(label => {
                 const industry = mockIndustries.find(i => i.id === label.industryId);
                 return (
                   <tr key={label.id} className="border-b last:border-0">

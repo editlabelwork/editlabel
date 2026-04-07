@@ -47,16 +47,16 @@
     --sidebar-ring: 152 64% 40%;
 
     /* Status badges */
-    --status-draft-bg: 217 91% 91%;
-    --status-draft-text: 224 64% 37%;
+    --status-progress-bg: 217 91% 91%;
+    --status-progress-text: 224 64% 37%;
     --status-sent-bg: 40 96% 89%;
     --status-sent-text: 26 90% 37%;
-    --status-review-bg: 270 95% 94%;
-    --status-review-text: 274 71% 40%;
-    --status-change-bg: 330 100% 93%;
-    --status-change-text: 336 74% 35%;
+    --status-change-bg: 30 100% 90%;
+    --status-change-text: 20 90% 40%;
     --status-approved-bg: 142 76% 93%;
     --status-approved-text: 149 61% 24%;
+    --status-done-bg: 152 60% 88%;
+    --status-done-text: 152 64% 20%;
 
     /* Chart */
     --chart-1: 152 64% 26%;

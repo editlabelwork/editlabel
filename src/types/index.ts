@@ -1,4 +1,4 @@
-export type LabelStatus = 'rascunho' | 'enviado' | 'em_analise' | 'alteracao' | 'aprovado';
+export type LabelStatus = 'em_andamento' | 'enviado_industria' | 'alteracao' | 'aprovado' | 'finalizado';
 
 export interface Industry {
   id: string;
@@ -31,6 +31,24 @@ export interface NutrientRow {
   por100g: string;
   porPorcao: string;
   vd: string;
+}
+
+export interface LabelAttachment {
+  id: string;
+  name: string;
+  type: 'rotulo_cru' | 'rotulo_designer' | 'rotulo_corrigido';
+  url: string;
+  uploadedAt: string;
+  notes?: string;
+}
+
+export interface LabelRevision {
+  id: string;
+  fromStatus: LabelStatus;
+  toStatus: LabelStatus;
+  changedFields: string[];
+  notes: string;
+  createdAt: string;
 }
 
 export interface LabelContent {
@@ -77,14 +95,19 @@ export interface Label {
   designerEmail: string;
   codigoBarras: string;
   content: LabelContent;
+  attachments: LabelAttachment[];
+  revisions: LabelRevision[];
+  changedFields: string[];
   createdAt: string;
   updatedAt: string;
 }
 
-export const STATUS_CONFIG: Record<LabelStatus, { label: string; bgClass: string; textClass: string }> = {
-  rascunho: { label: 'Rascunho', bgClass: 'bg-status-draft-bg', textClass: 'text-status-draft-text' },
-  enviado: { label: 'Enviado ao Designer', bgClass: 'bg-status-sent-bg', textClass: 'text-status-sent-text' },
-  em_analise: { label: 'Em Análise', bgClass: 'bg-status-review-bg', textClass: 'text-status-review-text' },
-  alteracao: { label: 'Alteração Solicitada', bgClass: 'bg-status-change-bg', textClass: 'text-status-change-text' },
-  aprovado: { label: 'Aprovado', bgClass: 'bg-status-approved-bg', textClass: 'text-status-approved-text' },
+export const STATUS_CONFIG: Record<LabelStatus, { label: string; bgClass: string; textClass: string; icon: string }> = {
+  em_andamento: { label: 'Em Andamento', bgClass: 'bg-status-progress-bg', textClass: 'text-status-progress-text', icon: '🔵' },
+  enviado_industria: { label: 'Enviado p/ Indústria', bgClass: 'bg-status-sent-bg', textClass: 'text-status-sent-text', icon: '📤' },
+  alteracao: { label: 'Solicitação de Alteração', bgClass: 'bg-status-change-bg', textClass: 'text-status-change-text', icon: '🔄' },
+  aprovado: { label: 'Aprovado', bgClass: 'bg-status-approved-bg', textClass: 'text-status-approved-text', icon: '✅' },
+  finalizado: { label: 'Finalizado', bgClass: 'bg-status-done-bg', textClass: 'text-status-done-text', icon: '🏁' },
 };
+
+export const STATUS_ORDER: LabelStatus[] = ['em_andamento', 'enviado_industria', 'alteracao', 'aprovado', 'finalizado'];
