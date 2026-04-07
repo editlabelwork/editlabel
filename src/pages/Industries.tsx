@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Search, MoreVertical, FileText } from 'lucide-react';
+import { Search, MoreVertical, FileText } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { mockIndustries, mockLabels } from '@/data/mockData';
+import NewIndustryDialog from '@/components/NewIndustryDialog';
 
 const Industries = () => {
   const [search, setSearch] = useState('');
@@ -30,10 +30,7 @@ const Industries = () => {
             className="pl-9"
           />
         </div>
-        <Button className="gap-1.5">
-          <Plus className="h-4 w-4" />
-          Nova Indústria
-        </Button>
+        <NewIndustryDialog />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
