@@ -47,7 +47,7 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Rotas públicas */}
+            {/* Rotas públicas - ANTES das rotas protegidas */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
 
@@ -67,7 +67,7 @@ const App = () => {
               <Route path="/configuracoes" element={<Settings />} />
             </Route>
 
-            {/* Rota 404 */}
+            {/* Rota 404 - ÚLTIMA */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
